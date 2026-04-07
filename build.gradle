@@ -24,6 +24,7 @@ dependencies {
 	implementation 'tools.jackson.module:jackson-module-kotlin'
 	implementation'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation'org.postgresql:postgresql'
+	implementation'org.springframework.boot:spring-boot-starter-validation'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -38,3 +39,25 @@ kotlin {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task npmInstall(type: Exec) {
+	workingDir 'frontend'
+	commandLine 'sh', '-c', '. ~/.nvm/nvm.sh && npm install'
+}
+
+task buildFrontend(type: Exec, dependsOn: npmInstall) {
+	workingDir 'frontend'
+	commandLine 'sh', '-c', '. ~/.nvm/nvm.sh && npm run build'
+}
+
+task copyFrontend(type: Copy, dependsOn: buildFrontend) {
+	from 'frontend/dist'
+	into 'src/main/resources/static'
+}
+
+tasks.named('processResources') {
+	dependsOn copyFrontend
+}
+
+bootRun.dependsOn copyFrontend
+bootJar.dependsOn copyFrontend

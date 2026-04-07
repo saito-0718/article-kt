@@ -1,4 +1,6 @@
 package com.example.demo.dto
 
-class ArticleCommand {
-}
+class ArticleCommand(
+    val name: String,
+    val content: String
+)
