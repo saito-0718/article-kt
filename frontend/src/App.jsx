@@ -34,7 +34,7 @@ export default function App() {
         <ArticleForm onPost={fetchArticles} />
         {loading && <p className="status-message">読み込み中...</p>}
         {error && <p className="status-message error">エラー: {error}</p>}
-        {!loading && !error && <ArticleList articles={articles} />}
+        {!loading && !error && <ArticleList articles={articles} onPost={fetchArticles} />}
       </main>
     </div>
   )
