@@ -7,7 +7,7 @@ export default function ArticleList() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    fetch('/api/article')
+    fetch('/article')
       .then((res) => {
         if (!res.ok) throw new Error(`HTTPエラー: ${res.status}`)
         return res.json()
