@@ -1,0 +1,35 @@
+/* usersテーブル新規作成 */
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+/* articlesテーブルにカラム追加 */
+ALTER TABLE articles
+    ADD COLUMN user_id INTEGER,
+    ADD COLUMN created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    ADD COLUMN updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+
+/* articlesテーブルに外部キー制約を追加 */
+ALTER TABLE articles
+    ADD CONSTRAINT fk_articles_user
+        FOREIGN KEY (user_id) REFERENCES users(id);
+
+/* commentsテーブルにカラム追加 */
+ALTER TABLE comments
+    ADD COLUMN user_id INTEGER,
+    ADD COLUMN created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    ADD COLUMN updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+
+/* commentsテーブルに外部キー制約を追加 */
+ALTER TABLE comments
+    ADD CONSTRAINT fk_comments_user
+        FOREIGN KEY (user_id) REFERENCES users(id);
+
+/* comments テーブルの nameをNULL可能に*/
+ALTER TABLE comments
+    ALTER COLUMN name DROP NOT NULL;
