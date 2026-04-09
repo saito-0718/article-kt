@@ -1,30 +1,40 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export default function CommentForm({ articleId, onPost }) {
-  const [name, setName] = useState('')
+export default function CommentForm({ articleId, onPost, loggedInUser, userId }) {
+  const [name, setName] = useState(loggedInUser ?? '')
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+    setName(loggedInUser ?? '')
+  }, [loggedInUser])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
     setError(null)
 
-    try {
-      const params = new URLSearchParams()
+    // ログイン済み: name=null, userId を送信
+    // 未ログイン:   name を送信, userId は送らない
+    const params = new URLSearchParams()
+    params.append('content', content)
+    params.append('articleId', articleId)
+    if (loggedInUser) {
+      params.append('userId', userId)
+    } else {
       params.append('name', name)
-      params.append('content', content)
-      params.append('articleId', articleId)
+    }
 
+    try {
       const res = await fetch('/comment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params,
       })
       if (!res.ok) throw new Error(`HTTPエラー: ${res.status}`)
-      setName('')
       setContent('')
+      if (!loggedInUser) setName('')
       await onPost()
     } catch (err) {
       setError(err.message)
@@ -42,7 +52,9 @@ export default function CommentForm({ articleId, onPost }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="名前"
-          required
+          readOnly={!!loggedInUser}
+          className={loggedInUser ? 'input-locked' : ''}
+          required={!loggedInUser}
         />
         <textarea
           value={content}

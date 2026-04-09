@@ -1,25 +1,35 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export default function ArticleForm({ onPost }) {
-  const [name, setName] = useState('')
+export default function ArticleForm({ onPost, loggedInUser, userId }) {
+  const [name, setName] = useState(loggedInUser ?? '')
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+    setName(loggedInUser ?? '')
+  }, [loggedInUser])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
     setError(null)
 
+    // ログイン済み: name=null, userId を送信
+    // 未ログイン:   name を送信, userId=null
+    const body = loggedInUser
+      ? { name: null, content, userId }
+      : { name, content, userId: null }
+
     try {
       const res = await fetch('/article', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, content }),
+        body: JSON.stringify(body),
       })
       if (!res.ok) throw new Error(`HTTPエラー: ${res.status}`)
-      setName('')
       setContent('')
+      if (!loggedInUser) setName('')
       await onPost()
     } catch (err) {
       setError(err.message)
@@ -33,14 +43,16 @@ export default function ArticleForm({ onPost }) {
       <h2 className="form-heading">記事を投稿する</h2>
       {error && <p className="form-error">{error}</p>}
       <div className="form-field">
-        <label htmlFor="name">名前</label>
+        <label htmlFor="article-name">名前</label>
         <input
-          id="name"
+          id="article-name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="名前を入力"
-          required
+          readOnly={!!loggedInUser}
+          className={loggedInUser ? 'input-locked' : ''}
+          required={!loggedInUser}
         />
       </div>
       <div className="form-field">

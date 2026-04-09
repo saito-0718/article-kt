@@ -6,7 +6,10 @@
       "Bash(./gradlew bootRun --info)",
       "Bash(lsof:*)",
       "Bash(./gradlew compileKotlin)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(./gradlew compileKotlin -x copyFrontend)",
+      "Bash(cp -r dist/assets/* ../src/main/resources/static/assets/)",
+      "Bash(cp dist/index.html ../src/main/resources/static/index.html)"
     ]
   }
 }

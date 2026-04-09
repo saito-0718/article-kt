@@ -30,6 +30,11 @@ ALTER TABLE comments
     ADD CONSTRAINT fk_comments_user
         FOREIGN KEY (user_id) REFERENCES users(id);
 
+/* articles テーブルの nameをNULL可能に*/
+ALTER TABLE articles
+    ALTER COLUMN name DROP NOT NULL;
+
+
 /* comments テーブルの nameをNULL可能に*/
 ALTER TABLE comments
     ALTER COLUMN name DROP NOT NULL;
