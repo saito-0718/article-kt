@@ -1,7 +1,7 @@
 package com.example.demo.controller
 
 import com.example.demo.dto.ArticleCommand
-import com.example.demo.form.ArticleForm
+import com.example.demo.request.ArticleRequest
 import com.example.demo.service.ArticleService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,10 +17,10 @@ class ArticleController(private val service: ArticleService ) {
     fun getArticles()= service.findAll()
 
     @PostMapping
-    fun save(@RequestBody articleForm: ArticleForm) {
+    fun save(@RequestBody articleRequest: ArticleRequest) {
         val command = ArticleCommand(
-            name = articleForm.name,
-            content = articleForm.content
+            name = articleRequest.name,
+            content = articleRequest.content
         )
         service.save(command)
     }
