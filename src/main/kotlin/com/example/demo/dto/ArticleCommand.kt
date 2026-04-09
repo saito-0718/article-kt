@@ -1,6 +1,7 @@
 package com.example.demo.dto
 
-class ArticleCommand(
-    val name: String,
-    val content: String
+data class ArticleCommand(
+    val name: String?,
+    val content: String,
+    val userId: Int?
 )
