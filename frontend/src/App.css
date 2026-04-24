@@ -443,6 +443,47 @@ body {
   cursor: not-allowed;
 }
 
+/* Comment Form Actions (like + submit row) */
+.comment-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Like Button */
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.like-btn:hover:not(:disabled) {
+  background-color: #fef0f0;
+  color: #e74c3c;
+}
+
+.like-btn.liked {
+  color: #e74c3c;
+}
+
+.like-btn:disabled {
+  cursor: default;
+}
+
+.like-count {
+  font-size: 0.9rem;
+}
+
 /* Form */
 .article-form {
   background: white;
