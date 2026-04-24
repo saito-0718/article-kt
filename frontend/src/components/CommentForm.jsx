@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 
-export default function CommentForm({ articleId, onPost, loggedInUser, userId }) {
+export default function CommentForm({ articleId, onPost, loggedInUser, userId, likeCount, isLiked, likedId, canLike }) {
   const [name, setName] = useState(loggedInUser ?? '')
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [liking, setLiking] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -43,6 +44,21 @@ export default function CommentForm({ articleId, onPost, loggedInUser, userId })
     }
   }
 
+  const handleLike = async () => {
+    if (!canLike || liking) return
+    setLiking(true)
+    try {
+      if (isLiked) {
+        await fetch(`/article/${likedId}/removeLike`, { method: 'DELETE' })
+      } else {
+        await fetch(`/article/${articleId}/addLike?userId=${userId}`, { method: 'POST' })
+      }
+      await onPost()
+    } finally {
+      setLiking(false)
+    }
+  }
+
   return (
     <form className="comment-form" onSubmit={handleSubmit}>
       {error && <p className="form-error">{error}</p>}
@@ -63,6 +79,18 @@ export default function CommentForm({ articleId, onPost, loggedInUser, userId })
           rows={3}
           required
         />
+      </div>
+      <div className="comment-form-actions">
+        <button
+          type="button"
+          className={`like-btn${isLiked ? ' liked' : ''}`}
+          onClick={handleLike}
+          disabled={!canLike || liking}
+          title={canLike ? (isLiked ? 'いいねを解除' : 'いいね') : 'いいねにはログインが必要です'}
+        >
+          {isLiked ? '♥' : '♡'}
+          <span className="like-count">{likeCount}</span>
+        </button>
         <button type="submit" className="comment-submit-btn" disabled={submitting}>
           {submitting ? '送信中...' : '送信'}
         </button>

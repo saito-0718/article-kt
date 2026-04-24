@@ -71,7 +71,16 @@ export default function ArticleItem({ article, onPost, loggedInUser, userId }) {
         <h3 className="comment-heading">コメント</h3>
         <CommentList comments={article.commentList} userId={userId} onPost={onPost} />
       </div>
-      <CommentForm articleId={article.id} onPost={onPost} loggedInUser={loggedInUser} userId={userId} />
+      <CommentForm
+        articleId={article.id}
+        onPost={onPost}
+        loggedInUser={loggedInUser}
+        userId={userId}
+        likeCount={article.articleLikes?.length ?? 0}
+        isLiked={!!(article.articleLikes?.find((like) => like.userId === userId))}
+        likedId={article.articleLikes?.find((like) => like.userId === userId)?.id}
+        canLike={userId != null}
+      />
     </div>
   )
 }

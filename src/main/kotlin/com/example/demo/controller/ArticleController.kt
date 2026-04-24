@@ -3,12 +3,16 @@ package com.example.demo.controller
 import com.example.demo.dto.ArticleCommand
 import com.example.demo.request.ArticlePatchRequest
 import com.example.demo.request.ArticleRequest
+import com.example.demo.service.ArticleLikeService
 import com.example.demo.service.ArticleService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/article")
-class ArticleController(private val service: ArticleService) {
+class ArticleController(
+    private val service: ArticleService,
+    private val articleLikeService: ArticleLikeService
+) {
 
     @GetMapping
     fun getArticles() = service.findAll()
@@ -31,5 +35,12 @@ class ArticleController(private val service: ArticleService) {
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) = service.delete(id)
 
+    @PostMapping("/{id}/addLike")
+    fun addLike(@PathVariable id: Int, @RequestParam userId: Int) =
+        articleLikeService.save(userId, id)
+
+    @DeleteMapping("/{id}/removeLike")
+    fun removeLike(@PathVariable id: Int) =
+        articleLikeService.deleteById(id)
 
 }

@@ -32,6 +32,19 @@ export default function App() {
   }
 
   useEffect(() => {
+    const storedToken = localStorage.getItem('token')
+    if (!storedToken) return
+    try {
+      const payload = JSON.parse(atob(storedToken.split('.')[1]))
+      if (payload.exp * 1000 < Date.now()) {
+        handleLogout()
+      }
+    } catch {
+      handleLogout()
+    }
+  }, [])
+
+  useEffect(() => {
     if (currentPage === 'board') fetchArticles()
   }, [currentPage])
 

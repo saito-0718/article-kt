@@ -1,0 +1,9 @@
+CREATE TABLE article_likes (
+    id          serial PRIMARY KEY,
+    user_id     INTEGER NOT NULL,
+    article_id     INTEGER NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, article_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (article_id) REFERENCES articles(id)
+);
